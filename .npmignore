@@ -1,0 +1,12 @@
+example
+node_modules/
+src/
+tests/
+.git/
+.npmignore
+.gitignore
+.editorconfig
+.babelrc
+package-lock.json
+index.html
+webpack.config.js
