@@ -1,9 +1,9 @@
 {
   "presets": [
     // jest 测试配置
-    ["@babel/preset-env", { "targets": { "node":"current" } }]
+    // ["@babel/preset-env", { "targets": { "node":"current" } }]
     // 打包配置
-    // ["@babel/preset-env", { "modules": false }]
+    ["@babel/preset-env", { "modules": false }]
     // "stage-3"
   ]
 }

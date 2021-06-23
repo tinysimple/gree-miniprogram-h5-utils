@@ -49,11 +49,20 @@ yarn add gree-miniprogram-h5-utils
 ---
 
 ## 当前支持的工具函数
-> <code>boolean isGreeMiniProgram(url?:string = window.location.href, key?:string = 'passThroughParams', value?:string = 'greeapp')</code>  ——判断当前h5是否在gree+小程序主体中加载。
+> <code>boolean isGreeMiniProgram(url?:string = window.location.href, queryKey?:string = 'passthrough', customKey?:string = 'origin', customVal?:string = 'greeapp')</code>  ——判断当前h5是否在gree+小程序主体中加载。
 
 &emsp;&emsp;<code>url</code>（非必填）：字符串类型；h5的访问地址，若不填写该参数时，将window.location.href作为判断的url；若不填写该参数且window.location.href属性不存在时，会抛出一个异常。
 
-&emsp;&emsp;<code>key</code>（非必填）：字符串类型；根据url中的query的具体key来判断，默认为 `passThroughParams`；
+&emsp;&emsp;<code>queryKey</code>（非必填）：字符串类型；指定url中的query的具体key为存放自定义数据的key，默认为 `passthrough`；
 
-&emsp;&emsp;<code>value</code>（非必填）：字符串类型；根据key对应的值来作为判断条件，默认为`greeapp`。
+&emsp;&emsp;<code>customKey</code>（非必填）：字符串类型；自定义数据中表示是否在格力+主体中的key，默认为`origin`。
 
+&emsp;&emsp;<code>customVal</code>（非必填）：字符串类型；自定义数据中表示是否在格力+主体中的key对应的值，默认为`greeapp`。
+
+---
+
+> <code>object getParams(url?: string = window.location.href)</code>  ——获取当前url的所有参数
+
+---
+
+> <code>object getGreeParams(url?: string = window.location.href, key?: string = 'passthrough')</code>  ——获取格力侧自定义参数
