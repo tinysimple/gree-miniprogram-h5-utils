@@ -1,7 +1,7 @@
 {
   "name": "gree-miniprogram-h5-utils",
   "description": "格力+小程序h5的工具包，不依赖于任何框架，可在任何项目中安装使用。",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "keywords": [
     "utils",
     "webpack",
@@ -35,12 +35,12 @@
     "babel-loader": "^8.0.6",
     "cross-env": "^5.0.5",
     "jest": "^27.0.4",
+    "webpack": "^3.6.0",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
     "vue": "^2.5.11",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
-    "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }
 }

@@ -68,8 +68,131 @@ function parse(params) {
   return result;
 }
 
+/**
+ * 合并两个对象的属性
+ * @param {Object} obj1
+ * @param {Object} obj2
+ */
+export const merge = (obj1, obj2) => {
+  if (obj1 == null || obj2 == null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+    throw new Error('param obj1 and obj2 must be typeof `object`')
+  }
+  const result = JSON.parse(JSON.stringify(obj1));
+    for(const key of Object.keys(obj2)) {
+        let item1 = result[key];
+        let item2 = obj2[key];
+        if (item1 == undefined) {
+            result[key] = item2;
+        } else if (typeof item1 === 'object' && typeof item2 === 'object' ) {
+            result[key] = merge(item1, item2);
+        } else {
+            result[key] = item2;
+        }
+    }
+    return result;
+}
+
+/**
+ * 至少millisecond毫秒后才进入决议状态
+ * @param {Promise} promise
+ * @param {number} millisecond
+ */
+export const untilFinished = (promise, millisecond) => {
+  if (typeof millisecond !== 'number') {
+    throw new Error('param millisecond must be type of `number`')
+  }
+  let promises = []
+  if (Array.isArray(promise)) {
+    promises = promise.map(item => Promise.resolve(item))
+  } else {
+    promises = [Promise.resolve(promise)]
+  }
+  const timeoutPromise = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, millisecond)
+    })
+  }
+  return Promise.all([...promises, timeoutPromise()]).then(resultArr => resultArr.slice(0, -1))
+}
+
+/**
+ * 深拷贝,可以弥补用JSON.parse和JSON.stringify来拷贝的局限性
+ * @param {*} original
+ */
+export const deepClone = (original) => {
+  let newObj;
+  if (typeof original === 'object' && original !== null) {
+      newObj = original.constructor === Array ? [] : {};
+      for(let item in original) {
+          newObj[item] = typeof original[item] === 'object' ? deepClone(original[item]) : original[item];
+      }
+  } else {
+      newObj = original;
+  }
+  return newObj;
+}
+
+/**
+ * 防抖函数
+ * @param {function} fn
+ * @param {number} wait
+ * @param {boolean} immediate
+ */
+export const debounce = (fn, wait, immediate) => {
+  if (typeof fn !== 'function') {
+    throw new Error('param fn must be a `function`')
+  }
+  if (typeof wait !== 'number') {
+    throw new Error('param wait must be a `number`')
+  }
+  let timer = null;
+  const tempFn = function(...args) {
+    let content = this
+    if (timer) {
+      clearTimeout(timer)
+    }
+    if (immediate) {
+      let isCallNow = !timer
+      if (isCallNow) {
+        fn.apply(content, args)
+      }
+      timer = setTimeout(() => {
+        timer = null
+      }, wait)
+    } else {
+      timer = setTimeout(() => {
+        timer = null
+        fn.apply(content, args)
+      }, wait)
+    }
+  }
+  return tempFn
+}
+
+/**
+ * 节流函数
+ * @param {function} func
+ * @param {number} wait
+ */
+export const throttle = (func, wait) => {
+  let startTime = 0
+  return function(...args) {
+    let handleTime = +new Date()
+    let context = this
+    if (handleTime - startTime >= wait) {
+        func.apply(context, args)
+        startTime = handleTime
+    }
+  }
+}
+
 export default {
   isGreeMiniProgram,
   getGreeParams,
-  getParams
+  getParams,
+  merge,
+  untilFinished,
+  deepClone,
+  debounce,
+  throttle
 }

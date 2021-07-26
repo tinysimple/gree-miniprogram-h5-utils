@@ -66,3 +66,27 @@ yarn add gree-miniprogram-h5-utils
 ---
 
 > <code>object getGreeParams(url?: string = window.location.href, key?: string = 'passthrough')</code>  ——获取格力侧自定义参数
+
+---
+
+> <code>object merge(obj1: object, obj2: object)</code>  ——合并两个对象的内容
+
+---
+
+> <code>Pormise untilFinished(promise: Promise | Promise[], millisecond: number)</code>  ——至少millisecond毫秒后才完成（可以用在loading状态处理：获取后端数据时显示loading状态，获取完成后取消显示loading状态，但如果后端返回较快，loading会闪一下立马消失）
+
+---
+
+> <code>any deepClone(original: any)</code>  ——深拷贝（真正意义上的深拷贝，可以弥补用JSON.parse和JSON.stringify来拷贝的局限性）
+
+---
+
+> <code>function debounce(fn: function, wait: number, immediate?: boolean)</code>  ——防抖函数，返回一个经过封装后的函数；
+>> wait：设置防抖的时间周期，如果下一次触发离上一次触发的时间小于时间周期，那么上一次触发的函数不会执行；也就是说，存在N * wait 时间内只会执行一次函数的情况：函数每次触发都离上一次触发的时间小于wait。
+
+>> immediate：可选，是否在第一次触发时执行函数。（默认为false，即延迟到最后一次触发后的wait时间后执行函数）
+
+---
+
+> <code>function throttle(func: function, wait: number)</code>  ——节流函数，返回一个经过封装后的函数；
+>>> wait：设置节流的时间周期，在这个周期内触发多次事件时，一定会执行一次。

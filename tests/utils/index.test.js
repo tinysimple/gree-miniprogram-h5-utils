@@ -1,4 +1,4 @@
-import { isGreeMiniProgram, getParams, getGreeParams } from '../../src/utils/index'
+import { isGreeMiniProgram, getParams, getGreeParams, merge, untilFinished, deepClone } from '../../src/utils/index'
 const { isGreeMiniProgram: otherWay } = require('../../src/utils/index')
 
 const urls = {
@@ -7,6 +7,59 @@ const urls = {
     'https://xxx.com?path=test': false,
     'https://www.xxx.com?query=gree#a1': false
 }
+
+const mergeOptions = [
+  {
+    desc: 'simple merge',
+    value: [
+      { a: 1, b: 2, c: 3 },
+      { a: 2, b: 3, c: 4, d: 5 }
+    ],
+    expect: {
+      a: 2, b: 3, c: 4, d: 5
+    }
+  },
+  {
+    desc: 'more merge',
+    value: [
+      { a: 1, b: 2, c: 3 },
+      { a: {a1: 2, a2: 4 }, b: null, c: undefined }
+    ],
+    expect: {
+      a: {a1:2,a2:4},b: null, c: undefined
+    }
+  },
+  {
+    desc: 'diff merge',
+    value: [
+      { a: {a1:2, a2: 3}, b: 2},
+      { a: {a2:4, a3: 5, a4: {a11: 6}}, c: 3}
+    ],
+    expect: {
+      a: {a1: 2, a2: 4, a3: 5, a4: {a11: 6}}, b: 2, c: 3
+    }
+  },
+  {
+    desc: 'diff2 merge',
+    value: [
+      { a: [1,2,3], b: 2},
+      { a: [3,2,1], c: 3}
+    ],
+    expect: {
+      a: [3,2,1], b: 2, c: 3
+    }
+  },
+  {
+    desc: 'diff3 merge',
+    value: [
+      { a: [{a1: 1, a2: 5},2,3], b: 2},
+      { a: [{a1: 3, a3: 6},2,1], c: 3}
+    ],
+    expect: {
+      a: [{a1: 3, a2: 5, a3: 6},2,1], b: 2, c: 3
+    }
+  }
+]
 console.log(otherWay)
 
 describe('isGreeMiniProgram utils method', () => {
@@ -125,6 +178,66 @@ describe('test getGreeParams func', () => {
     ).toEqual({
       origin: 'greeapp',
       mac: '1'
+    })
+  })
+})
+
+describe('merge methods', () => {
+  for(const item of mergeOptions) {
+    it(item.desc, () => {
+      expect(
+        merge(...item.value)
+      ).toStrictEqual(item.expect)
+    })
+  }
+})
+
+describe('untilFinished methods', () => {
+  it('simple', async () => {
+    const start = new Date()
+    const res = await untilFinished(1, 2000)
+    const end = new Date()
+    expect(end - start).toBeGreaterThanOrEqual(2000)
+    expect(res).toContainEqual(1)
+
+  })
+  it('simple2', async () => {
+    const start = new Date()
+    const res = await untilFinished(new Promise((resolve, reject) => {
+      setTimeout(() => resolve(1), 3000)
+    }), 2000)
+    const end = new Date()
+    expect(end - start).toBeGreaterThanOrEqual(3000)
+    expect(res).toContainEqual(1)
+  })
+})
+
+describe('deepClone methods', () => {
+  it('simple', () => {
+    const origin = {
+      a: 1,
+      b: 2,
+      c: {
+        c1: 3,
+        c2: 4,
+        c3: {
+          cc1: 5
+        }
+      }
+    }
+    const cloneObj = deepClone(origin)
+    origin.a = 2
+    origin.c.c1 = 'new val'
+    expect(cloneObj).toStrictEqual({
+      a: 1,
+      b: 2,
+      c: {
+        c1: 3,
+        c2: 4,
+        c3: {
+          cc1: 5
+        }
+      }
     })
   })
 })
