@@ -90,3 +90,8 @@ yarn add gree-miniprogram-h5-utils
 
 > <code>function throttle(func: function, wait: number)</code>  ——节流函数，返回一个经过封装后的函数；
 >>> wait：设置节流的时间周期，在这个周期内触发多次事件时，一定会执行一次。
+
+---
+
+> <code>function groupArray(arr: Array, groupSize?: number)</code>  ——将一维数组中的元素，每 groupSize 个为一组，转换为二维数组；
+>>> groupSize：分组后每个分组中的数组长度，如果设置为<code>0</code>，则返回原数组的浅拷贝；如果 <code>< 0</code>或者不传该参数，重置为<code>0</code>。

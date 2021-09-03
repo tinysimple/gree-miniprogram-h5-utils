@@ -1,4 +1,4 @@
-import { isGreeMiniProgram, getParams, getGreeParams, merge, untilFinished, deepClone } from '../../src/utils/index'
+import { isGreeMiniProgram, getParams, getGreeParams, merge, untilFinished, deepClone, groupArray } from '../../src/utils/index'
 const { isGreeMiniProgram: otherWay } = require('../../src/utils/index')
 
 const urls = {
@@ -60,6 +60,59 @@ const mergeOptions = [
     }
   }
 ]
+
+const groupOptions = [
+  {
+    desc: 'group without size',
+    value: [
+      [1,2,3,4,5]
+    ],
+    expect: [1,2,3,4,5]
+  },
+  {
+    desc: 'group size = 0',
+    value: [
+      [1,2,3,4,5], 0
+    ],
+    expect: [1,2,3,4,5]
+  },
+  {
+    desc: 'group size = 1',
+    value: [
+      [1,2,3,4,5], 1
+    ],
+    expect: [[1],[2],[3],[4],[5]]
+  },
+  {
+    desc: 'group size = 2',
+    value: [
+      [1,2,3,4,5], 2
+    ],
+    expect: [[1, 2],[3,4],[5]]
+  },
+  {
+    desc: 'group size = array.length',
+    value: [
+      [1,2,3,4,5], 5
+    ],
+    expect: [[1, 2,3,4,5]]
+  },
+  {
+    desc: 'group size > array.length',
+    value: [
+      [1,2,3,4,5], 6
+    ],
+    expect: [[1, 2,3,4,5]]
+  },
+  {
+    desc: 'group size < 0',
+    value: [
+      [1,2,3,4,5], -1
+    ],
+    expect: [1, 2,3,4,5]
+  },
+]
+
 console.log(otherWay)
 
 describe('isGreeMiniProgram utils method', () => {
@@ -240,4 +293,12 @@ describe('deepClone methods', () => {
       }
     })
   })
+})
+
+describe('groupArray methods', () => {
+  for(const item of groupOptions) {
+    it(item.desc, () => {
+      expect(groupArray(...item.value)).toStrictEqual(item.expect)
+    })
+  }
 })

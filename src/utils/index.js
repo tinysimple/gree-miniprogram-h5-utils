@@ -73,24 +73,24 @@ function parse(params) {
  * @param {Object} obj1
  * @param {Object} obj2
  */
-export const merge = (obj1, obj2) => {
-  if (obj1 == null || obj2 == null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-    throw new Error('param obj1 and obj2 must be typeof `object`')
-  }
-  const result = JSON.parse(JSON.stringify(obj1));
-    for(const key of Object.keys(obj2)) {
-        let item1 = result[key];
-        let item2 = obj2[key];
-        if (item1 == undefined) {
-            result[key] = item2;
-        } else if (typeof item1 === 'object' && typeof item2 === 'object' ) {
-            result[key] = merge(item1, item2);
-        } else {
-            result[key] = item2;
-        }
-    }
-    return result;
-}
+// export const merge = (obj1, obj2) => {
+//   if (obj1 == null || obj2 == null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+//     throw new Error('param obj1 and obj2 must be typeof `object`')
+//   }
+//   const result = JSON.parse(JSON.stringify(obj1));
+//     for(const key of Object.keys(obj2)) {
+//         let item1 = result[key];
+//         let item2 = obj2[key];
+//         if (item1 == undefined) {
+//             result[key] = item2;
+//         } else if (typeof item1 === 'object' && typeof item2 === 'object' ) {
+//             result[key] = merge(item1, item2);
+//         } else {
+//             result[key] = item2;
+//         }
+//     }
+//     return result;
+// }
 
 /**
  * 至少millisecond毫秒后才进入决议状态
@@ -186,6 +186,78 @@ export const throttle = (func, wait) => {
   }
 }
 
+
+/**
+ * 将一维数组中的元素，每 n 个为一组，转换为二维数组
+ * @param {Array} arr
+ * @param {number} groupSize
+ */
+export const groupArray = (arr, groupSize) => {
+  const result = [];
+  if (!Array.isArray(arr)) {
+    throw new TypeError("param 'arr' must be type of Array")
+  }
+  if (groupSize == undefined) {
+    groupSize = 0
+  } else if (typeof groupSize === 'object') {
+    groupSize = groupSize.valueOf()
+  }
+  if (typeof groupSize !== 'number') {
+    throw new TypeError("param groupSize must be type of number")
+  }
+  if (!arr || arr.length === 0) return result;
+  if (groupSize <= 0) {
+    return arr.slice()
+  }
+  let currentRow = [];
+  result.push(currentRow);
+
+  arr.forEach((item) => {
+    if (currentRow.length === groupSize) {
+      currentRow = [];
+      result.push(currentRow);
+    }
+    currentRow.push(item);
+  });
+  if (result.length === 0) {
+    result.push(currentRow);
+  }
+  return result;
+};
+
+/**
+ * 合并两个对象的属性，如果存在相同属性，则后一个对象的属性覆盖前一个对象的属性
+ * @param {object} obj1
+ * @param {object} obj2
+ */
+export const merge = (obj1, obj2) => {
+  const result = obj2 && obj2.constructor === Array ? [] : {};
+  if (obj1 == undefined && obj2 == undefined) {
+    return null
+  } else if (obj1 == undefined || obj2 == undefined) {
+    const exist = obj1 || obj2
+    for(const key of Object.keys(exist)) {
+      result[key] = exist[key]
+    }
+    return result
+  }
+  for(const key of Object.keys(obj1)) {
+    result[key] = obj1[key]
+  }
+  for(const key of Object.keys(obj2)) {
+      let item1 = result[key];
+      let item2 = obj2[key];
+      if (item1 == undefined) {
+          result[key] = item2;
+      } else if (typeof item1 === 'object' && typeof item2 === 'object' ) {
+          result[key] = merge(item1, item2);
+      } else {
+          result[key] = item2;
+      }
+  }
+  return result;
+}
+
 export default {
   isGreeMiniProgram,
   getGreeParams,
@@ -194,5 +266,6 @@ export default {
   untilFinished,
   deepClone,
   debounce,
-  throttle
+  throttle,
+  groupArray
 }

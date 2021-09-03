@@ -6,10 +6,13 @@
 
 <script>
 import commonUtil from './utils/index';
-import { isGreeMiniProgram } from './utils/index'
+import { isGreeMiniProgram, groupArray } from './utils/index'
 console.log(commonUtil);
 console.log(isGreeMiniProgram)
 console.log(isGreeMiniProgram('https://127.0.0.1/url?passThroughParams=greeapp&test=1'))
+const group = groupArray([1,2,3,4,5], 2)
+console.log(group)
+
 export default {
   name: 'app',
   data () {
